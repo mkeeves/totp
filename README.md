@@ -91,6 +91,7 @@ When a new version of `@otplib/preset-browser` is available:
 ## Technology Stack
 
 - **TOTP Library**: [@otplib/preset-browser](https://github.com/yeojz/otplib) v12.0.1
+  - Requires `buffer.js` and `index.js` scripts (both loaded from CDN)
 - **CDN**: unpkg.com
 - **No Build Step**: Pure HTML, CSS, and JavaScript
 

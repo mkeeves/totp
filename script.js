@@ -14,8 +14,16 @@ let updateInterval = null;
 let countdownInterval = null;
 let currentPeriod = 30;
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize - wait for both DOM and otplib library to be ready
+function initializeApp() {
+    // Check if otplib is loaded
+    const otplibInstance = window.otplib || (typeof otplib !== 'undefined' ? otplib : null);
+    if (!otplibInstance || !otplibInstance.authenticator) {
+        // Retry after a short delay if library isn't loaded yet
+        setTimeout(initializeApp, 100);
+        return;
+    }
+    
     // Load saved secret key from localStorage
     const savedSecret = localStorage.getItem('totp-secret-key');
     if (savedSecret) {
@@ -48,7 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
     digitsSelect.addEventListener('change', handleConfigChange);
     periodSelect.addEventListener('change', handlePeriodChange);
     themeToggle.addEventListener('click', toggleDarkMode);
-});
+}
+
+// Wait for DOM to be ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    // DOM is already ready
+    initializeApp();
+}
 
 // Handle secret key input change
 function handleSecretKeyChange() {
@@ -114,6 +130,14 @@ function generateToken() {
         return;
     }
     
+    // Check if otplib is loaded
+    const otplibInstance = window.otplib || (typeof otplib !== 'undefined' ? otplib : null);
+    if (!otplibInstance || !otplibInstance.authenticator) {
+        console.error('otplib library not loaded');
+        tokenDisplay.textContent = 'LIB ERROR';
+        return;
+    }
+    
     try {
         const digits = parseInt(digitsSelect.value);
         const period = parseInt(periodSelect.value);
@@ -122,7 +146,7 @@ function generateToken() {
         const cleanedSecret = secret.replace(/[\s-]/g, '').toUpperCase();
         
         // Generate token using otplib
-        const token = otplib.authenticator.generate(cleanedSecret, {
+        const token = otplibInstance.authenticator.generate(cleanedSecret, {
             digits: digits,
             step: period
         });
