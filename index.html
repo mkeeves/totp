@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOTP Token Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>TOTP Token Generator</h1>
+        
+        <form id="totp-form">
+            <label for="secret-key">Your Secret Key</label>
+            <input 
+                type="text" 
+                id="secret-key" 
+                name="secret-key" 
+                placeholder="Enter your secret key"
+                autocomplete="off"
+                required
+            >
+            
+            <label for="digits">Number of Digits</label>
+            <select id="digits" name="digits">
+                <option value="6" selected>6</option>
+                <option value="8">8</option>
+            </select>
+            
+            <label for="period">Token Period (in seconds)</label>
+            <select id="period" name="period">
+                <option value="30" selected>30</option>
+                <option value="60">60</option>
+            </select>
+        </form>
+        
+        <div class="token-display">
+            <div class="countdown">Updating in <span id="updating-in">30</span> seconds</div>
+            <div class="token" id="token">------</div>
+        </div>
+    </div>
+    
+    <div class="dark-mode-toggle-container">
+        <button class="dark-mode-toggle-button" id="theme-toggle" aria-label="Toggle dark mode">
+            <svg class="theme-icon-svg dark-mode-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <script src="https://unpkg.com/@otplib/preset-browser@12.0.1/index.js" 
+            integrity="sha384-d4ckAJIrPG6rCB/5gBX68DepjontMupkR+V6gIE38XtUX65BNJZV+wRYrzF0GDSG" 
+            crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+

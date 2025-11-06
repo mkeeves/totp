@@ -1,0 +1,26 @@
+{
+  "name": "totp-token-generator",
+  "version": "1.0.0",
+  "description": "TOTP token generator web application",
+  "private": true,
+  "scripts": {
+    "audit": "npm audit",
+    "outdated": "npm outdated"
+  },
+  "devDependencies": {
+    "@otplib/preset-browser": "^12.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mkeeves/totp.git"
+  },
+  "keywords": [
+    "totp",
+    "2fa",
+    "token",
+    "generator"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
