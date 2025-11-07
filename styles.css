@@ -215,13 +215,13 @@ body:not(.dark-mode) .dark-mode-icon {
     border-radius: 8px;
     padding: 4px;
     min-width: 120px;
-    display: none;
+    display: none !important;
     box-shadow: rgba(0, 0, 0, 0.3) 0 4px 12px;
     z-index: 1001;
 }
 
 .theme-menu.show {
-    display: block;
+    display: block !important;
 }
 
 .theme-option {
