@@ -1,6 +1,6 @@
 # TOTP Token Generator
 
-A single-page static web application for generating Time-based One-Time Password (TOTP) tokens. Styled consistently with the mkeeves.com design system and ready for deployment on GitHub Pages.
+A single-page static web application for generating Time-based One-Time Password (TOTP) tokens. Styled consistently with the mkeeves.com design system and ready for deployment on Cloudflare Pages or GitHub Pages.
 
 ## Features
 
@@ -51,11 +51,58 @@ The application uses SRI hashes to ensure the integrity of the CDN-loaded TOTP l
 
 4. Navigate to `http://localhost:8000` (or the port your server uses)
 
-## Deployment to GitHub Pages
+## Deployment
+
+### Cloudflare Pages (Recommended)
+
+#### Option A: Direct Upload via Wrangler CLI
+
+1. Install Wrangler CLI:
+   ```bash
+   npm install -g wrangler
+   ```
+
+2. Authenticate with Cloudflare:
+   ```bash
+   wrangler login
+   ```
+
+3. Create a Pages project in Cloudflare Dashboard:
+   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) → Pages → Create a project
+   - Name it `totp` (or any name you prefer)
+   - Don't connect a Git repository - we'll deploy manually
+
+4. Deploy from local directory:
+   ```bash
+   wrangler pages deploy . --project-name=totp
+   ```
+
+5. For custom domain (`totp.mkeeves.com`):
+   - In Cloudflare Pages project settings → Custom domains
+   - Add `totp.mkeeves.com`
+   - Update DNS in Cloudflare:
+     - Type: `CNAME`
+     - Name: `totp`
+     - Target: Your Cloudflare Pages domain (shown in project settings)
+     - Proxy status: Proxied (orange cloud)
+
+#### Option B: Git Integration (if GitHub app works later)
+
+1. Push the code to your GitHub repository
+2. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) → Pages → Create a project
+3. Connect your GitHub repository (`mkeeves/totp`)
+4. Configure build settings:
+   - **Framework preset**: None (or Static HTML)
+   - **Build command**: (leave empty - no build needed)
+   - **Build output directory**: `/` (root)
+   - **Root directory**: `/` (root)
+5. Click "Save and Deploy"
+
+### GitHub Pages (Alternative)
 
 1. Push the code to your GitHub repository
 2. Go to repository Settings → Pages
-3. Select the `main` branch as the source
+3. Select the `master` branch as the source
 4. The site will be available at `https://<username>.github.io/totp/`
 5. For custom domain (`totp.mkeeves.com`):
    - The `CNAME` file is already configured

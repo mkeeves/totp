@@ -207,10 +207,25 @@ function stopCountdown() {
     }
 }
 
-// Dark mode functionality
+// Dark mode functionality - shared across mkeeves.com sites
+const THEME_COOKIE_NAME = 'mkeeves-theme';
+const THEME_COOKIE_MAX_AGE = 365 * 24 * 60 * 60; // 1 year
+
+// Helper functions for cookie management (shared across subdomains)
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+function setCookie(name, value, maxAge, domain = '.mkeeves.com') {
+    document.cookie = `${name}=${value}; max-age=${maxAge}; path=/; domain=${domain}; SameSite=Lax`;
+}
+
 function initDarkMode() {
-    // Check for saved theme preference or default to light mode
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    // Check for saved theme preference (shared across all mkeeves.com subdomains via cookie)
+    const savedTheme = getCookie(THEME_COOKIE_NAME);
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     // Apply theme
@@ -223,20 +238,49 @@ function initDarkMode() {
     }
     
     updateThemeIcon();
+    
+    // Also store in localStorage for faster access (fallback)
+    if (savedTheme) {
+        localStorage.setItem('mkeeves-theme', savedTheme);
+    }
+    
+    // Poll for cookie changes (since storage events don't work across subdomains)
+    // Check every 500ms for theme changes from other mkeeves.com sites
+    let lastTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    setInterval(() => {
+        const currentTheme = getCookie(THEME_COOKIE_NAME) || (prefersDark ? 'dark' : 'light');
+        if (currentTheme !== lastTheme) {
+            lastTheme = currentTheme;
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.body.classList.remove('dark-mode');
+            }
+            updateThemeIcon();
+        }
+    }, 500);
 }
 
 function toggleDarkMode() {
     const isDark = document.body.classList.contains('dark-mode');
+    const newTheme = isDark ? 'light' : 'dark';
     
+    // Update UI immediately
     if (isDark) {
         document.documentElement.setAttribute('data-theme', 'light');
         document.body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
     } else {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
     }
+    
+    // Save to cookie (shared across all mkeeves.com subdomains)
+    setCookie(THEME_COOKIE_NAME, newTheme, THEME_COOKIE_MAX_AGE);
+    
+    // Also save to localStorage for faster access
+    localStorage.setItem('mkeeves-theme', newTheme);
     
     updateThemeIcon();
 }

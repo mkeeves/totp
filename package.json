@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "audit": "npm audit",
-    "outdated": "npm outdated"
+    "outdated": "npm outdated",
+    "deploy": "wrangler pages deploy ."
   },
   "devDependencies": {
     "@otplib/preset-browser": "^12.0.1"
